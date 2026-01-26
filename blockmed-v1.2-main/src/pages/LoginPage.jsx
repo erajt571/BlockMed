@@ -130,7 +130,60 @@ const LoginPage = () => {
             registeredAt: Number(userInfo.registeredAt),
           })
         } else {
-          setShowRegister(true)
+          // Auto-register dev mode accounts with their predefined roles
+          if (isDevModeConnection) {
+            const { DEV_ACCOUNTS } = await import('../utils/devMode')
+            const devAccount = DEV_ACCOUNTS.find(acc => acc.address.toLowerCase() === account.toLowerCase())
+            if (devAccount) {
+              try {
+                // Map dev account role names to ROLES constants
+                const roleMap = {
+                  'ADMIN': ROLES.ADMIN,
+                  'DOCTOR': ROLES.DOCTOR,
+                  'PHARMACIST': ROLES.PHARMACIST,
+                  'MANUFACTURER': ROLES.MANUFACTURER,
+                  'PATIENT': ROLES.PATIENT,
+                  'REGULATOR': ROLES.REGULATOR,
+                }
+                const devRole = roleMap[devAccount.role] || ROLES.DOCTOR
+                
+                console.log('🔧 Auto-registering dev account:', devAccount.name, 'with role:', devRole)
+                const writeContract = await getWriteContract()
+                
+                // Auto-register with name and license number from dev account
+                const tx = await writeContract.registerUser(
+                  devAccount.name.replace(' (Account #0)', '').replace(' (Account #1)', '').replace(' (Account #2)', '').replace(' (Account #3)', '').replace(' (Account #4)', '').replace(' (Account #5)', ''),
+                  `DEV-${devAccount.address.slice(2, 8).toUpperCase()}`,
+                  devRole
+                )
+                
+                console.log('⏳ Waiting for transaction...')
+                await tx.wait()
+                
+                // Fetch updated user info
+                const updatedUserInfo = await contract.getUser(account)
+                if (updatedUserInfo && updatedUserInfo.role !== 0n) {
+                  setUser({
+                    address: updatedUserInfo.userAddress,
+                    role: Number(updatedUserInfo.role),
+                    name: updatedUserInfo.name,
+                    licenseNumber: updatedUserInfo.licenseNumber,
+                    isVerified: devRole === ROLES.ADMIN, // Auto-verify admin
+                    isActive: true,
+                    registeredAt: Number(updatedUserInfo.registeredAt),
+                  })
+                  console.log('✅ Dev account auto-registered successfully')
+                }
+              } catch (regErr) {
+                console.warn('⚠️ Auto-registration failed, showing register form:', regErr)
+                setShowRegister(true)
+              }
+            } else {
+              setShowRegister(true)
+            }
+          } else {
+            setShowRegister(true)
+          }
         }
       } catch (err) {
         console.log('User not found, showing registration')
