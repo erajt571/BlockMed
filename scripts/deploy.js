@@ -1,0 +1,49 @@
+const hre = require("hardhat");
+
+async function main() {
+  console.log("🚀 Deploying BlockMed V2 Smart Contract...\n");
+
+  // Get the contract factory
+  const BlockMedV2 = await hre.ethers.getContractFactory("BlockMedV2");
+  
+  // Deploy the contract
+  const blockmed = await BlockMedV2.deploy();
+  
+  // Wait for deployment
+  await blockmed.waitForDeployment();
+  
+  const contractAddress = await blockmed.getAddress();
+  
+  console.log("✅ BlockMed V2 deployed successfully!");
+  console.log("📍 Contract Address:", contractAddress);
+  console.log("\n⚠️  IMPORTANT: Update the CONTRACT_ADDRESS in src/utils/config.js");
+  console.log(`\n   export const CONTRACT_ADDRESS = '${contractAddress}'`);
+  
+  // Get deployer info
+  const [deployer] = await hre.ethers.getSigners();
+  console.log("\n👤 Deployed by:", deployer.address);
+  
+  // Get initial stats
+  const prescriptionCount = await blockmed.prescriptionCount();
+  const batchCount = await blockmed.batchCount();
+  
+  console.log("\n📊 Initial Stats:");
+  console.log("   - Prescriptions:", prescriptionCount.toString());
+  console.log("   - Medicine Batches:", batchCount.toString());
+  
+  console.log("\n🎉 Deployment Complete!");
+  console.log("━".repeat(50));
+  console.log("\n📝 Next Steps (data persists only if you keep this address):");
+  console.log("   1. Add to .env so data is never 'lost' when you restart:");
+  console.log(`      VITE_CONTRACT_ADDRESS=${contractAddress}`);
+  console.log("   2. Restart the app: npm run dev");
+  console.log("   3. Connect wallet / Dev Mode and use BlockMed V2.");
+  console.log("\n   See BLOCKCHAIN_DATA_PERSISTENCE.md for how data is stored and how to find old data.");
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error("❌ Deployment failed:", error);
+    process.exit(1);
+  });

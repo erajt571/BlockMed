@@ -1,0 +1,90 @@
+🚀 UPLOAD TO GITHUB - QUICK START
+
+═══════════════════════════════════════════════════════════════════
+
+CHOOSE ONE METHOD TO UPLOAD ALL FILES:
+
+Method 1: Node.js (RECOMMENDED)
+  npm run upload:github
+
+Method 2: PowerShell (Windows)
+  npm run upload:github:ps
+
+Method 3: Bash (Linux/Mac)
+  npm run upload:github:bash
+
+Method 4: Batch (Windows Legacy)
+  npm run upload:github:batch
+
+═══════════════════════════════════════════════════════════════════
+
+WHAT HAPPENS:
+
+1. Git configures with your user info
+2. GitHub remote is configured
+3. All project files are staged
+4. Files are committed
+5. Everything is pushed to GitHub
+
+═══════════════════════════════════════════════════════════════════
+
+WHAT GETS UPLOADED:
+
+✅ Source code (src/)
+✅ Smart contracts (contracts/)
+✅ Scripts (scripts/)
+✅ Tests (test/)
+✅ Documentation (all markdown files)
+✅ Configuration files
+✅ Sync and upload tools
+
+🚫 NOT uploaded:
+- node_modules/ (use: npm install)
+- .env (keep local)
+- dist/ (rebuild with: npm run build)
+
+═══════════════════════════════════════════════════════════════════
+
+PREREQUISITES:
+
+✓ Git installed
+✓ GitHub account
+✓ Repository: https://github.com/erajt571/BlockMed
+✓ Internet connection
+
+═══════════════════════════════════════════════════════════════════
+
+AUTHENTICATION:
+
+GitHub will ask for:
+- Username: Your GitHub username
+- Password: Your personal access token (or password)
+
+To save credentials:
+  git config --global credential.helper store
+
+═══════════════════════════════════════════════════════════════════
+
+AFTER UPLOAD:
+
+1. Verify on GitHub:
+   https://github.com/erajt571/BlockMed
+
+2. Check main branch has files
+
+3. Continue development:
+   npm run dev
+
+═══════════════════════════════════════════════════════════════════
+
+NEED HELP?
+
+Read: GITHUB_UPLOAD_GUIDE.md
+
+═══════════════════════════════════════════════════════════════════
+
+RUN NOW:
+
+  npm run upload:github
+
+═══════════════════════════════════════════════════════════════════
